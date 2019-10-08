@@ -1,6 +1,8 @@
 # ArkNights-Helper
  ArkNights Helper, Tools
 
+ 需要稀有Tag（包括高级资深、资深和必出5星单Tag等）的截图，可添加至 bin/Debug/data/公招 目录下，并修改Form1.cs下的private string[] publicrecruit
+
  更新日志
 
 v 1.3.0
