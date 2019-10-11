@@ -188,7 +188,7 @@ namespace ArkNights {
             }
 
             Console.WriteLine(width+", "+height);
-            myaction("等级提升", -1);
+            //myaction("等级提升", -1);
         }
 
         private void button2_Click(object sender, EventArgs e) {
