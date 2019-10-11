@@ -308,13 +308,9 @@ namespace ArkNights {
                     if (isJiaoMie) {
                         beginTime = DateTime.Now;            //获取开始时间
                         while (!myaction("剿灭作战-结束", -1)) {
-                            if(myaction("等级提升", -1)) {
-                                Thread.Sleep(rd.Next(1000, 2000));
-                                if (!myaction("等级提升", 1)) {
-                                    MessageBox.Show("未检测到指定区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    button2.Text = "开始";
-                                    label3.Text = "    准备\r\n    完成";
-                                    return;
+                            if (myaction("等级提升", -1)) {
+                                while (myaction("等级提升", 1)) {
+                                    Thread.Sleep(100);
                                 }
                                 upgradecount++;
                             }
@@ -340,12 +336,8 @@ namespace ArkNights {
                         beginTime = DateTime.Now;            //获取开始时间
                         while (!myaction("行动结束", -1)) {
                             if (myaction("等级提升", -1)) {
-                                Thread.Sleep(rd.Next(1000, 2000));
-                                if (!myaction("等级提升", 1)) {
-                                    MessageBox.Show("未检测到等级提升区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    button2.Text = "开始";
-                                    label3.Text = "    准备\r\n    完成";
-                                    return;
+                                while (myaction("等级提升", 1)) {
+                                    Thread.Sleep(100);
                                 }
                                 upgradecount++;
                             }
@@ -361,15 +353,14 @@ namespace ArkNights {
                         }
                     }
                     Thread.Sleep(rd.Next(1000, 2000));
-                    if (myaction("等级提升", -1)) {
-                        Thread.Sleep(rd.Next(1000, 2000));
-                        if (!myaction("等级提升", 1)) {
-                            MessageBox.Show("未检测到等级提升区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            button2.Text = "开始";
-                            label3.Text = "    准备\r\n    完成";
-                            return;
+                    if (!myaction("行动结束", -1)) {
+                        Thread.Sleep(5000);
+                        if (myaction("等级提升", -1)) {
+                            while (myaction("等级提升", 1)) {
+                                Thread.Sleep(100);
+                            }
+                            upgradecount++;
                         }
-                        upgradecount++;
                     }
                     Thread.Sleep(rd.Next(1000, 2000));
                     if (myaction("行动结束", 1)) {
