@@ -24,3 +24,4 @@ D:\C#\ArkNights\ArkNights\obj\Release\ArkNights.csproj.CoreCompileInputs.cache
 D:\C#\ArkNights\ArkNights\obj\Release\ArkNights.csproj.CopyComplete
 D:\C#\ArkNights\ArkNights\obj\Release\ArkNights.exe
 D:\C#\ArkNights\ArkNights\obj\Release\ArkNights.pdb
+D:\C#\ArkNights\ArkNights\obj\Release\ArkNights.csprojAssemblyReference.cache
