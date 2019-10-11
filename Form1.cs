@@ -392,7 +392,9 @@ namespace ArkNights {
                     return;
                 }
                 count--;
-                label3.Text = "普通作战\r\n进行中 " + (total - count + 1) + "/" + total;
+                if (count != 0) {
+                    label3.Text = "普通作战\r\n进行中 " + (total - count + 1) + "/" + total;
+                }
             }
             string infostring = "已完成 " + Convert.ToInt32(counts.Text) + " 次";
             if(upgradecount != 0 || automedcount != 0) {

@@ -24,4 +24,3 @@ D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.Blob.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.Extensions.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.UserInterface.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.UserInterface.xml
-D:\C#\ArkNights\ArkNights\obj\Debug\ArkNights.csprojAssemblyReference.cache
