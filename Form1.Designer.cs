@@ -36,6 +36,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.autoMed = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,7 +74,7 @@
             // simname
             // 
             this.simname.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.simname.Location = new System.Drawing.Point(432, 471);
+            this.simname.Location = new System.Drawing.Point(435, 471);
             this.simname.Name = "simname";
             this.simname.Size = new System.Drawing.Size(100, 21);
             this.simname.TabIndex = 3;
@@ -83,7 +84,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(328, 475);
+            this.label1.Location = new System.Drawing.Point(325, 475);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(98, 14);
             this.label1.TabIndex = 4;
@@ -93,7 +94,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(328, 502);
+            this.label2.Location = new System.Drawing.Point(325, 502);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 14);
             this.label2.TabIndex = 6;
@@ -102,7 +103,7 @@
             // counts
             // 
             this.counts.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.counts.Location = new System.Drawing.Point(432, 498);
+            this.counts.Location = new System.Drawing.Point(435, 498);
             this.counts.Name = "counts";
             this.counts.Size = new System.Drawing.Size(100, 21);
             this.counts.TabIndex = 5;
@@ -111,9 +112,9 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("等线", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.Location = new System.Drawing.Point(331, 526);
+            this.button3.Location = new System.Drawing.Point(460, 526);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(201, 25);
+            this.button3.Size = new System.Drawing.Size(75, 25);
             this.button3.TabIndex = 7;
             this.button3.Text = "保存设置";
             this.button3.UseVisualStyleBackColor = true;
@@ -162,11 +163,23 @@
             this.label5.Text = "TAOqaq";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // autoMed
+            // 
+            this.autoMed.AutoSize = true;
+            this.autoMed.Font = new System.Drawing.Font("等线", 9.75F);
+            this.autoMed.Location = new System.Drawing.Point(328, 530);
+            this.autoMed.Name = "autoMed";
+            this.autoMed.Size = new System.Drawing.Size(130, 18);
+            this.autoMed.TabIndex = 12;
+            this.autoMed.Text = "自动使用理智药剂";
+            this.autoMed.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(864, 563);
+            this.Controls.Add(this.autoMed);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label4);
@@ -205,6 +218,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox autoMed;
     }
 }
 

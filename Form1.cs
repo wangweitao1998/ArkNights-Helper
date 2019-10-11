@@ -16,12 +16,6 @@ namespace ArkNights {
         private int width;
         private int height;
         private Thread thread1 = null;
-        //private string[] publicrecruit = {  "狙击干员", "术师干员", "先锋干员", "近卫干员", "重装干员", "医疗干员", "辅助干员", "特种干员",
-        //                                    "男性干员", "女性干员", "近战位", "远程位", "输出", "防护", "生存", "治疗", "费用回复", "群攻",
-        //                                    "减速", "支援", "快速复活", "削弱", "位移", "召唤", "控场", "爆发", "新手", "资深干员", "高级资深干员"  };
-        private string[] publicrecruit = {  "狙击干员", "术师干员", "先锋干员", "近卫干员", "重装干员", "医疗干员", "辅助干员", "特种干员",
-                                            "男性干员", "女性干员", "近战位", "远程位", "输出", "防护", "生存", "治疗", "费用回复", "群攻",
-                                            "减速", "快速复活", "削弱", "位移", "新手"  };
 
             #region Const
         const int WM_LBUTTONDOWN = 0x201;       //按下鼠标左键  
@@ -111,6 +105,7 @@ namespace ArkNights {
 
             simname.Text = srReadFile.ReadLine();
             counts.Text = srReadFile.ReadLine();
+            autoMed.Checked = Convert.ToBoolean(srReadFile.ReadLine());
 
             // 关闭读取流文件
             srReadFile.Close();
@@ -132,15 +127,19 @@ namespace ArkNights {
             pictureBox1.Image = GetImg(hWnd, Convert.ToInt32(width * ScaleX), Convert.ToInt32(height * ScaleX));
             if (myaction("公开招募", -1)) {
                 string pcresult = "";
-                foreach (string s in publicrecruit) {
-                    if (myaction("公招/" + s, -1, 0.9)) {
-                        pcresult += (s + ", ");
+                string strReadFilePath = @"./data/tag.data";
+                StreamReader srReadFile = new StreamReader(strReadFilePath);
+                while (!srReadFile.EndOfStream) {
+                    string s = srReadFile.ReadLine();
+                    if (!s.Contains("#")) {
+                        if (myaction("公招/" + s, -1, 0.9)) {
+                            pcresult += (s + ", ");
+                        }
                     }
                 }
-                Console.WriteLine(pcresult);
                 // 读取文件的源路径及其读取流
-                string strReadFilePath = @"./data/operator.data";
-                StreamReader srReadFile = new StreamReader(strReadFilePath);
+                strReadFilePath = @"./data/operator.data";
+                srReadFile = new StreamReader(strReadFilePath);
                 // 读取流直至文件末尾结束
                 List<string> tagList = new List<string>();
                 while (!srReadFile.EndOfStream) {
@@ -189,12 +188,16 @@ namespace ArkNights {
             }
 
             Console.WriteLine(width+", "+height);
-            //myaction("术师干员", -1);
+            myaction("等级提升", -1);
         }
 
         private void button2_Click(object sender, EventArgs e) {
-            
-            if(button2.Text == "开始") {
+            hWnd = FindWindow(null, simname.Text);
+            RECT rc = new RECT();
+            GetWindowRect(hWnd, ref rc);
+            width = rc.Right - rc.Left;                         //窗口的宽度
+            height = rc.Bottom - rc.Top;                        //窗口的高度
+            if (button2.Text == "开始") {
                 if (!myaction("开始行动", -1)) {
                     MessageBox.Show("不在关卡开始界面，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -231,13 +234,17 @@ namespace ArkNights {
             width = rc.Right - rc.Left;                         //窗口的宽度
             height = rc.Bottom - rc.Top;                        //窗口的高度
 
+            int upgradecount = 0;
+            int automedcount = 0;
+
             bool isJiaoMie = false;
+            int total = Convert.ToInt32(counts.Text);
             if (myaction("剿灭作战", -1)) {
                 isJiaoMie = true;
-                label3.Text = "剿灭作战\r\n进行中";
+                label3.Text = "剿灭作战\r\n进行中 1/" + total;
             }
             else {
-                label3.Text = "普通作战\r\n进行中";
+                label3.Text = "普通作战\r\n进行中 1/" + total;
             }
 
             int count = Convert.ToInt32(counts.Text);
@@ -245,11 +252,46 @@ namespace ArkNights {
                 if (myaction("开始行动", 1)) {
                     Random rd = new Random();
                     Thread.Sleep(rd.Next(200, 500));
-                    DateTime beginTime = DateTime.Now;            //获取开始时间
+                    DateTime beginTime = DateTime.Now;              //获取开始时间
+                    DateTime endTime;                               //获取结束时间
+                    TimeSpan oTime;                                 //求时间差
                     while (!myaction("开始行动2", -1)) {
-                        DateTime endTime = DateTime.Now;              //获取结束时间
-                        TimeSpan oTime = endTime.Subtract(beginTime); //求时间差
-                        if (oTime.TotalSeconds > 10) {
+                        if (myaction("理智不足", -1)) {
+                            if (!myaction("源石恢复", -1) && autoMed.Checked) {
+                                if (!myaction("恢复确认", 1)) {
+                                    MessageBox.Show("未检测到指定区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    button2.Text = "开始";
+                                    label3.Text = "    准备\r\n    完成";
+                                    return;
+                                }
+                                automedcount++;
+                                while (!myaction("开始行动", -1)) {
+                                    endTime = DateTime.Now;              //获取结束时间
+                                    oTime = endTime.Subtract(beginTime); //求时间差
+                                    if (oTime.TotalSeconds > 30) {
+                                        MessageBox.Show("检测指定区域超时，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        button2.Text = "开始";
+                                        label3.Text = "    准备\r\n    完成";
+                                        return;
+                                    }
+                                }
+                                if (!myaction("开始行动", 1)) {
+                                    MessageBox.Show("未检测到指定区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    button2.Text = "开始";
+                                    label3.Text = "    准备\r\n    完成";
+                                    return;
+                                }
+                            }
+                            else {
+                                MessageBox.Show("理智不足，将停止执行\r\n未开启自动使用理智药剂或理智药剂不足", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                button2.Text = "开始";
+                                label3.Text = "    准备\r\n    完成";
+                                return;
+                            }
+                        }
+                        endTime = DateTime.Now;              //获取结束时间
+                        oTime = endTime.Subtract(beginTime); //求时间差
+                        if (oTime.TotalSeconds > 20) {
                             MessageBox.Show("检测指定区域超时，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button2.Text = "开始";
                             label3.Text = "    准备\r\n    完成";
@@ -266,8 +308,18 @@ namespace ArkNights {
                     if (isJiaoMie) {
                         beginTime = DateTime.Now;            //获取开始时间
                         while (!myaction("剿灭作战-结束", -1)) {
-                            DateTime endTime = DateTime.Now;              //获取结束时间
-                            TimeSpan oTime = endTime.Subtract(beginTime); //求时间差
+                            if(myaction("等级提升", -1)) {
+                                Thread.Sleep(rd.Next(1000, 2000));
+                                if (!myaction("等级提升", 1)) {
+                                    MessageBox.Show("未检测到指定区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    button2.Text = "开始";
+                                    label3.Text = "    准备\r\n    完成";
+                                    return;
+                                }
+                                upgradecount++;
+                            }
+                            endTime = DateTime.Now;              //获取结束时间
+                            oTime = endTime.Subtract(beginTime); //求时间差
                             if (oTime.TotalSeconds > 1800) {
                                 MessageBox.Show("检测指定区域超时，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 button2.Text = "开始";
@@ -287,8 +339,18 @@ namespace ArkNights {
                     else {
                         beginTime = DateTime.Now;            //获取开始时间
                         while (!myaction("行动结束", -1)) {
-                            DateTime endTime = DateTime.Now;              //获取结束时间
-                            TimeSpan oTime = endTime.Subtract(beginTime); //求时间差
+                            if (myaction("等级提升", -1)) {
+                                Thread.Sleep(rd.Next(1000, 2000));
+                                if (!myaction("等级提升", 1)) {
+                                    MessageBox.Show("未检测到等级提升区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    button2.Text = "开始";
+                                    label3.Text = "    准备\r\n    完成";
+                                    return;
+                                }
+                                upgradecount++;
+                            }
+                            endTime = DateTime.Now;              //获取结束时间
+                            oTime = endTime.Subtract(beginTime); //求时间差
                             if (oTime.TotalSeconds > 600) {
                                 MessageBox.Show("检测指定区域超时，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 button2.Text = "开始";
@@ -298,14 +360,24 @@ namespace ArkNights {
                             Thread.Sleep(500);
                         }
                     }
-                    Thread.Sleep(4000);
+                    Thread.Sleep(rd.Next(1000, 2000));
+                    if (myaction("等级提升", -1)) {
+                        Thread.Sleep(rd.Next(1000, 2000));
+                        if (!myaction("等级提升", 1)) {
+                            MessageBox.Show("未检测到等级提升区域，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            button2.Text = "开始";
+                            label3.Text = "    准备\r\n    完成";
+                            return;
+                        }
+                        upgradecount++;
+                    }
+                    Thread.Sleep(rd.Next(1000, 2000));
                     if (myaction("行动结束", 1)) {
-                        Thread.Sleep(rd.Next(100, 500));
-                        myaction("行动结束", 1);
                         beginTime = DateTime.Now;            //获取开始时间
                         while (!myaction("开始行动", -1)) {
-                            DateTime endTime = DateTime.Now;              //获取结束时间
-                            TimeSpan oTime = endTime.Subtract(beginTime); //求时间差
+                            myaction("行动结束", 1);
+                            endTime = DateTime.Now;              //获取结束时间
+                            oTime = endTime.Subtract(beginTime); //求时间差
                             if (oTime.TotalSeconds > 20) {
                                 MessageBox.Show("检测指定区域超时，将停止运行", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 button2.Text = "开始";
@@ -329,8 +401,19 @@ namespace ArkNights {
                     return;
                 }
                 count--;
+                label3.Text = "普通作战\r\n进行中 " + (total - count + 1) + "/" + total;
             }
-            MessageBox.Show("已完成 " + Convert.ToInt32(counts.Text) + " 次", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string infostring = "已完成 " + Convert.ToInt32(counts.Text) + " 次";
+            if(upgradecount != 0 || automedcount != 0) {
+                infostring += "\r\n";
+            }
+            if (automedcount != 0) {
+                infostring += "\r\n使用 " + automedcount + " 次理智试剂";
+            }
+            if (upgradecount != 0) {
+                infostring += "\r\n升级 " + upgradecount + " 级";
+            }
+            MessageBox.Show(infostring, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             button2.Text = "开始";
             label3.Text = "    准备\r\n    完成";
         }
@@ -360,11 +443,11 @@ namespace ArkNights {
             //Draw a rectangle of the matching area
             Cv2.Rectangle(screen, r, Scalar.LimeGreen, 2);
 
-            //Cv2.ImShow("Demo", screen);
-
-            System.Console.WriteLine(maxval);
             if (maxval > standard) {
+                System.Console.WriteLine(maxval);
+                System.Console.WriteLine(name + " detected");
                 if (type != -1) {
+                    System.Console.WriteLine(name + " click");
                     myclick(Convert.ToInt32(maxloc.X * xscale + 5), Convert.ToInt32(maxloc.Y * yscale + 5));
                     pictureBox1.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(screen);
                 }
@@ -431,6 +514,7 @@ namespace ArkNights {
 
             swWriteFile.WriteLine(simname.Text);
             swWriteFile.WriteLine(counts.Text);
+            swWriteFile.WriteLine(autoMed.Checked);
 
             swWriteFile.Close();
         }
