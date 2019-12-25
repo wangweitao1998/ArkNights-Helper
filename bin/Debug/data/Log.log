@@ -1,0 +1,41 @@
+2019/12/25 13:30:22: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 56
+2019/12/25 13:30:22: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 68
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 702
+2019/12/25 13:31:53: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 42
+2019/12/25 13:31:53: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 68
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 702
+2019/12/25 13:34:24: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 42
+2019/12/25 13:34:24: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 68
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 703
+2019/12/25 13:40:54: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 47
+2019/12/25 13:40:54: 远程服务器返回错误: (404) 未找到。
+   在 System.Net.HttpWebRequest.GetResponse()
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 73
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 703
+2019/12/25 13:42:10: 系统找不到指定的文件。
+   在 System.Diagnostics.Process.StartWithShellExecuteEx(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start()
+   在 System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   在 System.Diagnostics.Process.Start(String fileName)
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 23
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 703

@@ -24,3 +24,16 @@ D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.Blob.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.Extensions.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.UserInterface.pdb
 D:\C#\ArkNights\ArkNights\bin\Debug\OpenCvSharp.UserInterface.xml
+D:\C#\ArkNights\ArkNights\obj\Debug\ArkNights.csprojAssemblyReference.cache
+D:\C#\ArkNights\ArkNights\bin\Debug\Tesseract.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\x86\liblept1760.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\x86\libtesseract400.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\x64\liblept1760.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\x64\libtesseract400.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.Imaging.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.Math.dll
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.xml
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.Imaging.xml
+D:\C#\ArkNights\ArkNights\bin\Debug\AForge.Math.xml
+D:\C#\ArkNights\ArkNights\obj\Debug\ArkNights.Download.resources

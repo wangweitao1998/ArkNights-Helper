@@ -8,6 +8,7 @@ using System.IO;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
 using System.Text;
+using System.Net;
 
 namespace ArkNights {
     public partial class Form1 : Form {
@@ -16,8 +17,9 @@ namespace ArkNights {
         private int width;
         private int height;
         private Thread thread1 = null;
+        private static bool active = false;
 
-            #region Const
+        #region Const
         const int WM_LBUTTONDOWN = 0x201;       //按下鼠标左键  
         const int WM_LBUTTONUP = 0x202;         //释放鼠标左键  
         const int WM_LBUTTONDBLCLK = 0x203;     //双击鼠标左键
@@ -55,6 +57,13 @@ namespace ArkNights {
             public int Right;                               //最右坐标
             public int Bottom;                              //最下坐标
         }
+
+        [DllImport("user32.dll")]
+        static extern bool SystemParametersInfo(uint uiAction, bool uiParam, ref bool pvParam, uint fWinIni);
+        const uint SPI_GETSCREENSAVEACTIVE = 0x0010;
+        const uint SPI_SETSCREENSAVEACTIVE = 0x0011;
+        const uint SPIF_SENDCHANGE = 0x0002;
+        const uint SPIF_SENDWININICHANGE = SPIF_SENDCHANGE;
 
         [DllImport("user32.dll")]//获取窗口句柄
         public static extern IntPtr FindWindow(
@@ -100,6 +109,8 @@ namespace ArkNights {
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
 
+            SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, false, ref active, SPIF_SENDWININICHANGE);
+
             string strReadFilePath = @"./data/settings.conf";
             StreamReader srReadFile = new StreamReader(strReadFilePath);
 
@@ -126,13 +137,22 @@ namespace ArkNights {
 
             pictureBox1.Image = GetImg(hWnd, Convert.ToInt32(width * ScaleX), Convert.ToInt32(height * ScaleX));
             if (myaction("公开招募", -1)) {
+                /*var ocr = new Tesseract.TesseractEngine("./data/tessdata", "chi_sim", Tesseract.EngineMode.TesseractAndLstm);
+                Bitmap img = GetImg(hWnd, Convert.ToInt32(width * ScaleX), Convert.ToInt32(height * ScaleX));
+                Rectangle rClipRect = new Rectangle(img.Width / 4, img.Height / 2, img.Width / 2, img.Height / 5);
+                Bitmap newimg = img.Clone(rClipRect, img.PixelFormat);
+                Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+                var page = ocr.Process(filter.Apply(newimg));
+                pictureBox1.Image = newimg;
+                MessageBox.Show(page.GetText(),"OCR结果", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
+
                 string pcresult = "";
                 string strReadFilePath = @"./data/tag.data";
                 StreamReader srReadFile = new StreamReader(strReadFilePath);
                 while (!srReadFile.EndOfStream) {
                     string s = srReadFile.ReadLine();
                     if (!s.Contains("#")) {
-                        if (myaction("公招/" + s, -1, 0.9)) {
+                        if (myaction("tags/" + s, -1, 0.9)) {
                             pcresult += (s + ", ");
                         }
                     }
@@ -174,7 +194,7 @@ namespace ArkNights {
                             string[] opinfo = tagList[0].Split(':');
                             string[] tag = opinfo[0].Split('+');
                             foreach (string s in tag) {
-                                if (!myaction("公招/" + s, 1, 0.9)) {
+                                if (!myaction("tags/" + s, 1, 0.9)) {
                                     MessageBox.Show("自动选择出错！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     break;
                                 }
@@ -223,11 +243,13 @@ namespace ArkNights {
                 MessageBox.Show("已停止执行", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 button2.Text = "开始";
                 label3.Text = "    准备\r\n    完成";
+                SystemSleepManagement.RestoreSleep();
             }
 
         }
 
         private void arknights() {
+            SystemSleepManagement.PreventSleep(true);
             hWnd = FindWindow(null, simname.Text);
             RECT rc = new RECT();
             GetWindowRect(hWnd, ref rc);
@@ -406,9 +428,10 @@ namespace ArkNights {
             if (upgradecount != 0) {
                 infostring += "\r\n升级 " + upgradecount + " 级";
             }
-            MessageBox.Show(infostring, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             button2.Text = "开始";
             label3.Text = "    准备\r\n    完成";
+            SystemSleepManagement.RestoreSleep();
+            MessageBox.Show(infostring, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private bool myaction(string name, int type, double standard = 0.8) {
@@ -422,7 +445,7 @@ namespace ArkNights {
             double xscale = width / 880.0;
             double yscale = height / 527.0;
             Mat screen = OpenCvSharp.Extensions.BitmapConverter.ToMat(map);
-            Mat start = new Mat("./data/" + name + ".jpg");
+            Mat start = new Mat("./data/img/" + name + ".jpg");
             Mat res = new Mat(screen.Rows - start.Rows + 1, screen.Cols - start.Cols + 1, MatType.CV_32FC1);
             Mat gref = screen.CvtColor(ColorConversionCodes.BGR2GRAY);
             Mat gtpl = start.CvtColor(ColorConversionCodes.BGR2GRAY);
@@ -437,10 +460,10 @@ namespace ArkNights {
             Cv2.Rectangle(screen, r, Scalar.LimeGreen, 2);
 
             if (maxval > standard) {
-                System.Console.WriteLine(maxval);
-                System.Console.WriteLine(name + " detected");
+                Console.WriteLine(maxval);
+                Console.WriteLine(name + " detected");
                 if (type != -1) {
-                    System.Console.WriteLine(name + " click");
+                    Console.WriteLine(name + " click");
                     myclick(Convert.ToInt32(maxloc.X * xscale + 5), Convert.ToInt32(maxloc.Y * yscale + 5));
                     pictureBox1.Image = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(screen);
                 }
@@ -517,20 +540,233 @@ namespace ArkNights {
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-            if(thread1 != null) {
+            SystemSleepManagement.RestoreSleep();
+            if (thread1 != null) {
                 thread1.Abort();
             }
         }
 
-        private string PadRightEx(string str, int totalByteCount, char c) {
-            Encoding coding = Encoding.GetEncoding("gb2312");
-            int dcount = 0;
-            foreach (char ch in str.ToCharArray()) {
-                if (coding.GetByteCount(ch.ToString()) == 2)
-                    dcount++;
+        class SystemSleepManagement {
+            //定义API函数
+            [DllImport("kernel32.dll")]
+            static extern uint SetThreadExecutionState(ExecutionFlag flags);
+
+            [Flags]
+            enum ExecutionFlag : uint {
+                System = 0x00000001,
+                Display = 0x00000002,
+                Continuous = 0x80000000,
             }
-            string w = str.PadRight(totalByteCount - dcount, c);
-            return w;
+
+            /// <summary>
+            ///阻止系统休眠，直到线程结束恢复休眠策略
+            /// </summary>
+            /// <param name="includeDisplay">是否阻止关闭显示器</param>
+            public static void PreventSleep(bool includeDisplay = false) {
+                SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, false, ref active, SPIF_SENDWININICHANGE);
+                if (includeDisplay)
+                    SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Display | ExecutionFlag.Continuous);
+                else
+                    SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Continuous);
+                Console.WriteLine("Sleep OFF");
+            }
+
+            /// <summary>
+            ///恢复系统休眠策略
+            /// </summary>
+            public static void RestoreSleep() {
+                SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, active, ref active, SPIF_SENDWININICHANGE);
+                SetThreadExecutionState(ExecutionFlag.Continuous);
+                Console.WriteLine("Sleep ON");
+            }
+
+            /// <summary>
+            ///重置系统休眠计时器
+            /// </summary>
+            /// <param name="includeDisplay">是否阻止关闭显示器</param>
+            public static void ResetSleepTimer(bool includeDisplay = false) {
+                if (includeDisplay)
+                    SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Display);
+                else
+                    SetThreadExecutionState(ExecutionFlag.System);
+            }
+        }
+
+        class UpdateHelper {
+            WebClient webClient = null;
+            
+            public UpdateHelper() {
+                webClient = new WebClient();
+                webClient.Encoding = Encoding.UTF8;
+            }
+            
+            /// <summary>
+            /// 查看是否有新版本
+            /// </summary>
+            /// <returns>
+            /// 0 无
+            /// 1 软件有新版本
+            /// 2 数据有新版本
+            /// 3 数据有静默更新版本
+            /// </returns>
+            public int isNewVersionExists() {
+                try {
+                    string outText = webClient.DownloadString("http://47.93.56.66/arknights/version.info");
+                    string text1 = outText.Split('\n')[0];
+                    text1 = text1.Split(' ')[1];
+                    string strReadFilePath = @"./data/version";
+                    StreamReader srReadFile = new StreamReader(strReadFilePath);
+                    string text2 = srReadFile.ReadLine();
+                    srReadFile.Close();
+                    Version newv = new Version(text1);
+                    Version oldv = new Version(text2);
+                    if (newv > oldv) {
+                        return 1;
+                    }
+
+                    text1 = outText.Split('\n')[1];
+                    string ifsilence = text1.Split(' ')[2];
+                    text1 = text1.Split(' ')[1];
+                    strReadFilePath = @"./data/version";
+                    srReadFile = new StreamReader(strReadFilePath);
+                    srReadFile.ReadLine();
+                    text2 = srReadFile.ReadLine();
+                    srReadFile.Close();
+                    newv = new Version(text1);
+                    oldv = new Version(text2);
+                    if (newv > oldv) {
+                        if (ifsilence.Equals("silence")) {
+                            return 3;
+                        }
+                        return 2;
+                    }
+
+                    return 0;
+                }
+                catch (Exception e) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(e.Message + "\n" + e.StackTrace);
+                    return 0;
+                }
+            }
+
+            public void updateFiles() {
+                try {
+                    string outText = webClient.DownloadString("http://47.93.56.66/arknights/dataupdate.conf");
+                    string[] files = outText.Split('\n');
+                    foreach (string item in files) {
+                        string[] sitem = item.Split(' ');
+                        if (sitem[0].Equals("+")) {
+                            webClient.DownloadFile("http://47.93.56.66/arknights/files/" + sitem[1], "./data/" + sitem[1]);
+                        }
+                        else if (sitem[0].Equals("-")) {
+                            File.Delete("./data/" + sitem[1]);
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(e.Message + "\n" + e.StackTrace);
+                    MessageBox.Show("数据文件更新失败！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    return;
+                }
+                try {
+                    string strFilePath = @"./data/version";
+                    StreamReader srReadFile = new StreamReader(strFilePath);
+                    string[] version = srReadFile.ReadToEnd().Split('\n');
+                    srReadFile.Close();
+                    string t = webClient.DownloadString("http://47.93.56.66/arknights/version.info");
+                    version[1] = t.Split('\n')[1].Split(' ')[1];
+
+                    StreamWriter swWriteFile = File.CreateText(strFilePath);
+                    foreach (string s in version) {
+                        if (!s.Equals(""))
+                            swWriteFile.WriteLine(s.Replace("\n", "").Replace("\r", ""));
+                    }
+                    swWriteFile.Close();
+                }
+                catch (Exception e) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(e.Message + "\n" + e.StackTrace);
+                    MessageBox.Show("数据文件版本号更新失败！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            public void updateApp() {
+                Download download = null;
+                try {
+                    string t = webClient.DownloadString("http://47.93.56.66/arknights/version.info");
+                    string version = t.Split('\n')[0].Split(' ')[1].Replace("\n", "").Replace("\r", "");
+                    download = new Download("http://47.93.56.66/arknights/installer/ArkNights_Helper_Setup_" + version + ".msi", "./ArkNights_Helper_Setup_" + version + ".msi");
+                    download.Show();
+                    download.Start();
+                }
+                catch (Exception e) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(e.Message + "\n" + e.StackTrace);
+                    if(download != null) {
+                        download.Closeconnection();
+                        download.Dispose();
+                    }
+                    MessageBox.Show("Arknights Helper更新失败！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            public string getUpdateInfo() {
+                try {
+                    return webClient.DownloadString("http://47.93.56.66/arknights/installer/update.info");
+                }
+                catch (Exception e) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(e.Message + "\n" + e.StackTrace);
+                    return "获取版本更新内容失败！";
+                }
+            }
+
+            public void Dispose() {
+                webClient.Dispose();
+            }
+
+        }
+
+        private void Form1_Shown(object sender, EventArgs e) {
+            UpdateHelper update = new UpdateHelper();
+            int updatestate = update.isNewVersionExists();
+
+            if (updatestate == 3) {
+                update.updateFiles();
+            }
+
+            if (File.Exists(@"./data/custom.data")) {
+                try {
+                    string strReadFilePath = @"./data/custom.data";
+                    StreamReader srReadFile = new StreamReader(strReadFilePath);
+                    label5.Text = srReadFile.ReadLine().Replace("\n", "").Replace("\r", "");
+                    srReadFile.Close();
+                }
+                catch (Exception err) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(err.Message + "\n" + err.StackTrace);
+                    return;
+                }
+            }
+
+            
+            if (updatestate == 1) {
+                string updateinfo = update.getUpdateInfo();
+                DialogResult dr = MessageBox.Show("Arknights Helper检测到新版本！\r\n是否下载？\r\n\r\n更新内容：\r\n" + updateinfo, "自动更新", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (dr == DialogResult.Yes) {
+                    update.updateApp();
+                }
+            }
+            else if(updatestate == 2) {
+                DialogResult dr = MessageBox.Show("数据文件检测到新版本！\r\n是否下载？", "自动更新", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (dr == DialogResult.Yes) {
+                    update.updateFiles();
+                }
+            }
         }
     }
 }

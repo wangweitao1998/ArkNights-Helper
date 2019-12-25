@@ -156,11 +156,11 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("等线", 15F);
-            this.label5.Location = new System.Drawing.Point(71, 481);
+            this.label5.Location = new System.Drawing.Point(14, 481);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 21);
+            this.label5.Size = new System.Drawing.Size(135, 21);
             this.label5.TabIndex = 11;
-            this.label5.Text = "TAOqaq";
+            this.label5.Text = "           TAOqaq";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // autoMed
@@ -198,6 +198,7 @@
             this.Name = "Form1";
             this.Text = "ArkNights Helper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
