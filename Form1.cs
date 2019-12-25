@@ -650,12 +650,51 @@ namespace ArkNights {
                 }
             }
 
-            public void updateFiles() {
+            public void updateFiles(int n) {
                 try {
+                    string strReadFilePath = @"./data/version";
+                    StreamReader srReadFile = new StreamReader(strReadFilePath);
+                    srReadFile.ReadLine();
+                    string text1 = srReadFile.ReadLine();
+                    srReadFile.Close();
+                    Version oldv = new Version(text1);
+
                     string outText = webClient.DownloadString("http://47.93.56.66/arknights/dataupdate.conf");
                     string[] files = outText.Split('\n');
-                    foreach (string item in files) {
-                        string[] sitem = item.Split(' ');
+
+                    if(n == 3) {
+                        for(int j=0; j<files.Length; j++) {
+                            string[] sitem = files[j].Split(' ');
+                            if (sitem[0].Equals("v") && !sitem[2].Equals("silence")) {
+                                j += 1;
+                                while (!files[j].Split(' ')[0].Equals("v") && j<files.Length) {
+                                    if(files[j].Replace("\n", "").Replace("\r", "").Equals("")) {
+                                        j += 1;
+                                        continue;
+                                    }
+                                    string temp = files[j].Split(' ')[1];
+                                    files[j] = "~ " + temp;
+                                    j += 1;
+                                }
+                                j -= 1;
+                            }
+                        }
+                    }
+
+                    int i = 0;
+                    for (; i<files.Length; i++) {
+                        string[] sitem = files[i].Split(' ');
+                        if (sitem[0].Equals("v")) {
+                            Version newv = new Version(sitem[1]);
+                            if(newv > oldv) {
+                                i += 1;
+                                break;
+                            }
+                        }
+                    }
+                    for (; i<files.Length; i++) {
+                        Console.WriteLine(files[i]);
+                        string[] sitem = files[i].Split(' ');
                         if (sitem[0].Equals("+")) {
                             webClient.DownloadFile("http://47.93.56.66/arknights/files/" + sitem[1], "./data/" + sitem[1]);
                         }
@@ -698,7 +737,7 @@ namespace ArkNights {
                 try {
                     string t = webClient.DownloadString("http://47.93.56.66/arknights/version.info");
                     string version = t.Split('\n')[0].Split(' ')[1].Replace("\n", "").Replace("\r", "");
-                    download = new Download("http://47.93.56.66/arknights/installer/ArkNights_Helper_Setup_" + version + ".msi", "./ArkNights_Helper_Setup_" + version + ".msi");
+                    download = new Download("http://47.93.56.66/arknights/installer/ArkNights_Helper_Setup_" + version + ".msi", "ArkNights_Helper_Setup_" + version + ".msi");
                     download.Show();
                     download.Start();
                 }
@@ -731,14 +770,7 @@ namespace ArkNights {
 
         }
 
-        private void Form1_Shown(object sender, EventArgs e) {
-            UpdateHelper update = new UpdateHelper();
-            int updatestate = update.isNewVersionExists();
-
-            if (updatestate == 3) {
-                update.updateFiles();
-            }
-
+        private void Form1_Shown(object sender, EventArgs e) {     
             if (File.Exists(@"./data/custom.data")) {
                 try {
                     string strReadFilePath = @"./data/custom.data";
@@ -753,7 +785,9 @@ namespace ArkNights {
                 }
             }
 
-            
+            UpdateHelper update = new UpdateHelper();
+            int updatestate = update.isNewVersionExists();
+
             if (updatestate == 1) {
                 string updateinfo = update.getUpdateInfo();
                 DialogResult dr = MessageBox.Show("Arknights Helper检测到新版本！\r\n是否下载？\r\n\r\n更新内容：\r\n" + updateinfo, "自动更新", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -764,7 +798,24 @@ namespace ArkNights {
             else if(updatestate == 2) {
                 DialogResult dr = MessageBox.Show("数据文件检测到新版本！\r\n是否下载？", "自动更新", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (dr == DialogResult.Yes) {
-                    update.updateFiles();
+                    update.updateFiles(2);
+                }
+            }
+            else if (updatestate == 3) {
+                update.updateFiles(3);
+            }
+
+            if (File.Exists(@"./data/custom.data")) {
+                try {
+                    string strReadFilePath = @"./data/custom.data";
+                    StreamReader srReadFile = new StreamReader(strReadFilePath);
+                    label5.Text = srReadFile.ReadLine().Replace("\n", "").Replace("\r", "");
+                    srReadFile.Close();
+                }
+                catch (Exception err) {
+                    Logger logger = new Logger("./data/Log.log");
+                    logger.log(err.Message + "\n" + err.StackTrace);
+                    return;
                 }
             }
         }

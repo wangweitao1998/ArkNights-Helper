@@ -51,11 +51,13 @@
             this.ClientSize = new System.Drawing.Size(404, 131);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Download";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "下载中...";
+            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Download_FormClosing);
             this.ResumeLayout(false);
 

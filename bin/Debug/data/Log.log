@@ -39,3 +39,51 @@
    在 System.Diagnostics.Process.Start(String fileName)
    在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 23
    在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 703
+2019/12/25 16:03:34: 版本字符串部分太短或太长。
+   在 System.Version.VersionResult.SetFailure(ParseFailureKind failure, String argument)
+   在 System.Version.TryParseVersion(String version, VersionResult& result)
+   在 System.Version.Parse(String input)
+   在 System.Version..ctor(String version)
+   在 ArkNights.Form1.UpdateHelper.isNewVersionExists() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 621
+2019/12/25 16:28:52: 索引超出了数组界限。
+   在 ArkNights.Form1.UpdateHelper.updateFiles(Int32 n) 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 671
+2019/12/25 16:50:36: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 63
+2019/12/25 16:50:36: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 75
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 22
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 742
+2019/12/25 16:55:04: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 62
+2019/12/25 16:55:04: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 74
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 742
+2019/12/25 17:13:21: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 62
+2019/12/25 17:13:21: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 74
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 742
+2019/12/25 17:15:18: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 62
+2019/12/25 17:15:18: 无法访问已关闭的文件。
+   在 System.IO.__Error.FileNotOpen()
+   在 System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   在 ArkNights.Download.DownLoadFile(String URL, String Filename, Action`2 updateProgress) 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 74
+   在 ArkNights.Download.Start() 位置 D:\C#\ArkNights\ArkNights\Download.cs:行号 21
+   在 ArkNights.Form1.UpdateHelper.updateApp() 位置 D:\C#\ArkNights\ArkNights\Form1.cs:行号 742
